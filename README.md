@@ -1,1 +1,2 @@
-# comic-bot
+# COMIC_BOT
+slackに今日発売の漫画情報を出力

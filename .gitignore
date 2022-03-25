@@ -1,0 +1,9 @@
+# url情報
+url_info.json
+
+# 外部モジュール
+/python
+
+# slackのサンプルテキストフォーマット
+slack_text_format
+
