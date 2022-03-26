@@ -90,24 +90,24 @@ def get_author(comic):
 
 
 def create_slack_text(comics):
-    slack_text_list = [
-        {
-            'blocks': []
-        }
-    ]
+    slack_text_list = []
 
     if comics == []:
         today = get_today()
         url = get_url_from_json('target_scraped_url').format(
             today.year, today.month)
 
-        slack_text_list[0]['blocks'].append(
+        slack_text_list.append(
             {
-                'type': 'section',
-                'text': {
-                    'type': 'mrkdwn',
-                    'text': f'本日発売の新刊はありません \n 他の漫画情報は<{url}|こちら>を確認して下さい'
-                }
+                'blocks': [
+                    {
+                        'type': 'section',
+                        'text': {
+                            'type': 'mrkdwn',
+                            'text': f'本日発売の新刊はありません \n 他の漫画情報は<{url}|こちら>を確認して下さい'
+                        }
+                    }
+                ]
             }
         )
 
@@ -115,18 +115,25 @@ def create_slack_text(comics):
 
     else:
         for comic in comics:
-            slack_text_list[0]['blocks'].append(
+            slack_text_list.append(
                 {
-                    'type': 'section',
-                    'text': {
-                        'type': 'mrkdwn',
-                        'text': f'<{comic["amazon_url"]}|{comic["title"]}> \n \n {comic["company"]}/{comic["author"]}'
-                    },
-                    'accessory': {
-                        'type': 'image',
-                        'image_url': comic['image_url'],
-                        'alt_text': comic['title']
-                    }
+                    'blocks': [
+                        {
+                            'type': 'divider'
+                        },
+                        {
+                            'type': 'section',
+                            'text': {
+                                'type': 'mrkdwn',
+                                'text': f'<{comic["amazon_url"]}|{comic["title"]}> \n \n {comic["company"]}/{comic["author"]}'
+                            },
+                            'accessory': {
+                                'type': 'image',
+                                'image_url': comic['image_url'],
+                                'alt_text': comic['title']
+                            }
+                        }
+                    ]
                 }
             )
 
