@@ -130,7 +130,7 @@ def create_slack_text(comics):
                             'type': 'section',
                             'text': {
                                 'type': 'mrkdwn',
-                                'text': f'<{comic["amazon_url"]}|{comic["title"]}> \n \n {comic["company"]}/{comic["author"]}'
+                                'text': f'<{comic["amazon_url"]}|{comic["title"]}> \n \n {comic["company"]} / {comic["author"]}'
                             },
                             'accessory': {
                                 'type': 'image',
