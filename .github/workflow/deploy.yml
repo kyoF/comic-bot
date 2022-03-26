@@ -1,0 +1,19 @@
+name: AWS Deploy
+on: push
+
+env:
+  AWS_ROLE_ARN: arn:aws:iam::586596014160:role/slackNotifyFromLambda
+
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  aws-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: aws-actions/configure-aws-credentials@master
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ap-northeast-1
+      - run: aws sts get-caller-identity
