@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import json
 import datetime
+import slackweb
 
 
 def main():
@@ -115,7 +116,9 @@ def create_slack_text(comics):
             slack_text_list[0]['blocks'].append(
                 {
                     'type': 'divider'
-                },
+                }
+            )
+            slack_text_list[0]['blocks'].append(
                 {
                     'type': 'section',
                     'text': {
@@ -133,9 +136,10 @@ def create_slack_text(comics):
 
 def slack_notify(text):
     today = get_today()
-    slack_url = get_url_from_json('incoming_webhook_url')
+
+    slack_url = slackweb.Slack(get_url_from_json('incoming_webhook_url'))
     slack_url.notify(
-        f'今日 ( {str(today.month)}/{str(today.day)} {str(today.strftime("%a"))} ) のマンガ情報',
+        text=f'今日 ( {str(today.month)}/{str(today.day)} {str(today.strftime("%a"))} ) のマンガ情報',
         attachments=text
     )
 
