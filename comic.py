@@ -5,7 +5,6 @@ import datetime
 
 
 def main():
-    # 明日の日付と曜日を取得する
     today = get_today()
 
     comics = []
@@ -43,6 +42,8 @@ def main():
             break
 
     slack_text = create_slack_text(comics)
+
+    slack_notify(slack_text)
 
 
 def get_today():
@@ -88,13 +89,55 @@ def get_author(comic):
 
 
 def create_slack_text(comics):
-    return ''
+    slack_text_list = [
+        {
+            'blocks': []
+        }
+    ]
+
+    if comics == []:
+        today = get_today()
+        url = get_url_from_json('target_scraped_url').format(
+            today.year, today.month)
+
+        slack_text_list[0]['blocks'].append(
+            {
+                'type': 'section',
+                'text': {
+                    'type': 'mrkdwn',
+                    'text': f'本日発売の新刊はありません \n 他の漫画情報は<{url}|こちら>を確認して下さい'
+                }
+            }
+        )
+
+    else:
+        for comic in comics:
+            slack_text_list[0]['blocks'].append(
+                {
+                    'type': 'divider'
+                },
+                {
+                    'type': 'section',
+                    'text': {
+                        'type': 'mrkdwn',
+                        'text': f'<{comic["amazon_url"]}|{comic["title"]}> \n \n {comic["company"]}/{comic["author"]}'
+                    },
+                    'accessory': {
+                        'type': 'image',
+                        'image_url': comic['image_url'],
+                        'alt_text': comic['title']
+                    }
+                }
+            )
 
 
-def slack_notify(text, month, day, day_of_week):
+def slack_notify(text):
+    today = get_today()
     slack_url = get_url_from_json('incoming_webhook_url')
     slack_url.notify(
-        f'今日 ( {str(month)}/{str(day)} {str(day_of_week)} ) のマンガ情報', attachments=text)
+        f'今日 ( {str(today.month)}/{str(today.day)} {str(today.strftime("%a"))} ) のマンガ情報',
+        attachments=text
+    )
 
 
 if __name__ == '__main__':
