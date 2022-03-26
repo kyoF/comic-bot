@@ -32,11 +32,11 @@ def main():
                     'author': ''
                 }
 
-                comic_info_dict['title'] = get_title(comic)
-                comic_info_dict['image_url'] = get_image_url(comic)
-                comic_info_dict['amazon_url'] = get_amazon_url(comic)
-                comic_info_dict['company'] = get_company(comic)
-                comic_info_dict['author'] = get_author(comic)
+                comic_info_dict['title'] = get_title(comic).strip()
+                comic_info_dict['image_url'] = get_image_url(comic).strip()
+                comic_info_dict['amazon_url'] = get_amazon_url(comic).strip()
+                comic_info_dict['company'] = get_company(comic).strip()
+                comic_info_dict['author'] = get_author(comic).strip()
 
                 comics.append(comic_info_dict)
 
@@ -111,13 +111,10 @@ def create_slack_text(comics):
             }
         )
 
+        return slack_text_list
+
     else:
         for comic in comics:
-            slack_text_list[0]['blocks'].append(
-                {
-                    'type': 'divider'
-                }
-            )
             slack_text_list[0]['blocks'].append(
                 {
                     'type': 'section',
@@ -133,14 +130,16 @@ def create_slack_text(comics):
                 }
             )
 
+        return slack_text_list
 
-def slack_notify(text):
+
+def slack_notify(slack_text):
     today = get_today()
 
     slack_url = slackweb.Slack(get_url_from_json('incoming_webhook_url'))
     slack_url.notify(
         text=f'今日 ( {str(today.month)}/{str(today.day)} {str(today.strftime("%a"))} ) のマンガ情報',
-        attachments=text
+        attachments=slack_text
     )
 
 
