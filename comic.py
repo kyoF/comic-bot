@@ -8,8 +8,6 @@ import slackweb
 def main():
     today = get_today()
 
-    comics = []
-
     target_url = get_url_from_json(
         'target_scraped_url').format(today.year, today.month)
 
@@ -20,25 +18,7 @@ def main():
             continue
 
         if release_date == today.day:
-            comics_of_day = today_comic.find(
-                'td', class_='products-td').find_all('div', class_='div-wrap')
-
-            for comic in comics_of_day:
-                comic_info_dict = {
-                    'title': '',
-                    'image_url': '',
-                    'amazon_url': '',
-                    'company': '',
-                    'author': ''
-                }
-
-                comic_info_dict['title'] = get_title(comic).strip()
-                comic_info_dict['image_url'] = get_image_url(comic).strip()
-                comic_info_dict['amazon_url'] = get_amazon_url(comic).strip()
-                comic_info_dict['company'] = get_company(comic).strip()
-                comic_info_dict['author'] = get_author(comic).strip()
-
-                comics.append(comic_info_dict)
+            comics = get_today_release_comics(today_comic)
 
             break
 
@@ -61,6 +41,31 @@ def get_comic_info_from_html(url):
     response = requests.get(url)
     soup = BeautifulSoup(response.content, 'html.parser')
     return soup.find('div', id='content-inner')
+
+
+def get_today_release_comics(comics):
+    today_comics_list = []
+    comics_of_day = comics.find(
+        'td', class_='products-td').find_all('div', class_='div-wrap')
+
+    for comic in comics_of_day:
+        comic_info_dict = {
+            'title': '',
+            'image_url': '',
+            'amazon_url': '',
+            'company': '',
+            'author': ''
+        }
+
+        comic_info_dict['title'] = get_title(comic).strip()
+        comic_info_dict['image_url'] = get_image_url(comic).strip()
+        comic_info_dict['amazon_url'] = get_amazon_url(comic).strip()
+        comic_info_dict['company'] = get_company(comic).strip()
+        comic_info_dict['author'] = get_author(comic).strip()
+
+        today_comics_list.append(comic_info_dict)
+
+    return today_comics_list
 
 
 def get_title(comic):
