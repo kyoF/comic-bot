@@ -6,22 +6,44 @@ import datetime
 
 def main():
     # 明日の日付と曜日を取得する
-    tomorrow = datetime.date.today() + datetime.timedelta(days=1)
-    year = tomorrow.year
-    month = tomorrow.month
-    day = tomorrow.day
-    day_of_week = tomorrow.strftime('%a')
+    today = get_today()
 
-    target_url = get_url_from_json('target_scraped_url').format(year, month)
-    comics = get_comic_info_from_html(target_url)
-    comics_list = comics.find_all('tr')
-    print(comics_list)
-    for index, comic in enumerate(comics_list):
-        if index+1 == day:
-            works_of_day = comic.find(
-                'div', class_='products-td').find_all('div', class_='div-wrap')
+    comics = []
+
+    target_url = get_url_from_json(
+        'target_scraped_url').format(today.year, today.month)
+    all_comics = get_comic_info_from_html(target_url)
+    comics_list = all_comics.find_all('tr')
+    for release_date, today_comic in enumerate(comics_list):
+        if release_date == 0:
+            continue
+        if release_date == today.day:
+            comics_of_day = today_comic.find(
+                'td', class_='products-td').find_all('div', class_='div-wrap')
+            for comic in comics_of_day:
+                comic_info_dict = {
+                    'title': '',
+                    'image_url': '',
+                    'amazon_url': '',
+                    'company': '',
+                    'author': ''
+                }
+
+                comic_info_dict['title'] = get_title(comic)
+                comic_info_dict['image_url'] = get_image_url(comic)
+                comic_info_dict['amazon_url'] = get_amazon_url(comic)
+                comic_info_dict['company'] = get_company(comic)
+                comic_info_dict['author'] = get_author(comic)
+
+                comics.append(comic_info_dict)
 
             break
+
+    print(comics)
+
+
+def get_today():
+    return datetime.date.today()
 
 
 def get_url_from_json(key):
@@ -34,6 +56,32 @@ def get_comic_info_from_html(url):
     response = requests.get(url)
     soup = BeautifulSoup(response.content, 'html.parser')
     return soup.find('div', id='content-inner')
+
+
+def get_title(comic):
+    return comic.find('div', class_='product-description-right').find('a').get_text()
+
+
+def get_image_url(comic):
+    return comic.find('img')['src']
+
+
+def get_amazon_url(comic):
+    return comic.find('div', class_='product-description-right').find('a')['href']
+
+
+def get_company(comic):
+    try:
+        return comic.find_all('p', class_='p-company')[0].get_text()
+    except:
+        return '不明'
+
+
+def get_author(comic):
+    try:
+        return comic.find_all('p', class_='p-company')[1].get_text()
+    except:
+        return '不明'
 
 
 def slack_notify(text, month, day, day_of_week):
