@@ -157,4 +157,4 @@ def slack_notify(slack_text):
 
 
 if __name__ == '__main__':
-    main()
+    main('', '')
