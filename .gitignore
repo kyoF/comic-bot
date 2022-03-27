@@ -1,5 +1,5 @@
-# url情報
-url_info.json
+# 環境変数
+.env
 
 # 外部モジュール
 /python
