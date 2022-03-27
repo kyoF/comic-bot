@@ -2,7 +2,7 @@ name: AWS Deploy
 on: push
 
 env:
-  AWS_ROLE_ARN: arn:aws:iam::586596014160:role/slackNotifyFromLambda
+  AWS_ROLE_ARN: arn:aws:iam::586596014160:role/slack-bot-oidc-role
 
 permissions:
   id-token: write
@@ -16,4 +16,9 @@ jobs:
         with:
           role-to-assume: ${{ env.AWS_ROLE_ARN }}
           aws-region: ap-northeast-1
-      - run: aws sts get-caller-identity
+      - uses: actions/setup-python@v1
+        with:
+          python-version: 3.9
+      - run: zip -r package.zip ./comic.py
+      - run: pip install awscli
+      - run: aws lambda update-function-code --function-name execute-comic-bot-function --zip-file fileb://package.zip --publish
