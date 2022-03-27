@@ -4,7 +4,7 @@ slackに今日発売の漫画情報を出力
 ## 環境構築
 1. リポジトリのclone
     ```
-    $ git clone
+    $ git clone　git@github.com:kyoF/comic-bot.git
     $ cd comic-bot
     ```
 
