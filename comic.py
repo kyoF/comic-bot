@@ -6,7 +6,7 @@ import os
 from dotenv import load_dotenv
 
 
-def main():
+def main(response, context):
     load_dotenv()
 
     today = get_today()
