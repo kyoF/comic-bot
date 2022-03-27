@@ -1,5 +1,8 @@
 name: AWS Deploy
-on: push
+on: 
+  push:
+    branches:
+      - main
 
 env:
   AWS_ROLE_ARN: arn:aws:iam::586596014160:role/slack-bot-oidc-role

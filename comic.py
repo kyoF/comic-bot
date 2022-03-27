@@ -1,14 +1,17 @@
 import requests
 from bs4 import BeautifulSoup
-import json
 import datetime
 import slackweb
+import os
+from dotenv import load_dotenv
 
 
-def main():
+def main(response, context):
+    load_dotenv()
+
     today = get_today()
 
-    target_url = get_url_from_json(
+    target_url = get_url_from_dotenv(
         'target_scraped_url').format(today.year, today.month)
 
     all_comics = get_comic_info_from_html(target_url).find_all('tr')
@@ -31,10 +34,8 @@ def get_today():
     return datetime.date.today()
 
 
-def get_url_from_json(key):
-    with open('url_info.json') as f:
-        json_data = json.load(f)
-        return json_data[key]
+def get_url_from_dotenv(value):
+    return os.getenv(value)
 
 
 def get_comic_info_from_html(url):
@@ -99,7 +100,7 @@ def create_slack_text(comics):
 
     if comics == []:
         today = get_today()
-        url = get_url_from_json('target_scraped_url').format(
+        url = get_url_from_dotenv('target_scraped_url').format(
             today.year, today.month)
 
         slack_text_list.append(
@@ -148,7 +149,7 @@ def create_slack_text(comics):
 def slack_notify(slack_text):
     today = get_today()
 
-    slack_url = slackweb.Slack(get_url_from_json('incoming_webhook_url'))
+    slack_url = slackweb.Slack(get_url_from_dotenv('incoming_webhook_url'))
     slack_url.notify(
         text=f'今日 ( {str(today.month)}/{str(today.day)} {str(today.strftime("%a"))} ) のマンガ情報',
         attachments=slack_text
