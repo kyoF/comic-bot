@@ -15,7 +15,7 @@ slackに今日発売の漫画情報を出力
     .envファイルに下記を追記
     ```
     incoming_webhook_url={incoming webhookのURL}
-    target_scraped_url=https://calendar.gameiroiro.com/manga.php?year={}&month={}
+    target_scraped_url=https://calendar.gameiroiro.com/kindle-manga.php?year={}&month={}
     ```
 
 3. モジュールの追加
