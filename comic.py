@@ -30,8 +30,9 @@ def main(response, context):
     slack_notify(slack_text)
 
 
+# グリニッジ標準時でAWS Lambdaが実行されるため、明日の日付を取得して日本時間の今日の日付とする
 def get_today():
-    return datetime.date.today()
+    return datetime.date.today() + datetime.timedelta(days=1)
 
 
 def get_url_from_dotenv(value):
