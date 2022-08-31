@@ -98,12 +98,11 @@ def get_author(comic):
 
 def create_slack_text(comics):
     slack_text_list = []
+    today = get_today()        
+    url = get_url_from_dotenv('target_scraped_url').format(
+        today.year, today.month)
 
     if comics == []:
-        today = get_today()
-        url = get_url_from_dotenv('target_scraped_url').format(
-            today.year, today.month)
-
         slack_text_list.append(
             {
                 'blocks': [
@@ -121,7 +120,7 @@ def create_slack_text(comics):
         return slack_text_list
 
     else:
-        for comic in comics:
+        for index, comic in enumerate(comics):
             slack_text_list.append(
                 {
                     'blocks': [
@@ -143,6 +142,25 @@ def create_slack_text(comics):
                     ]
                 }
             )
+
+            if index == 23:
+                slack_text_list.append(
+                    {
+                        'blocks': [
+                            {
+                                'type': 'divider'
+                            },
+                            {
+                                'type': 'section',
+                                'text': {
+                                    'type': 'mrkdwn',
+                                    'text': f'25冊目以降のタイトルは<{url}|こちら>から確認してください'
+                                }
+                            }
+                        ]
+                    }
+                )
+                break;
 
         return slack_text_list
 
