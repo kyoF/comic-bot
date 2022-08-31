@@ -18,18 +18,12 @@ slackに今日発売の漫画情報を出力
     target_scraped_url=https://calendar.gameiroiro.com/kindle-manga.php?year={}&month={}
     ```
 
-3. モジュールの追加
+3. 実行
+    [poetry](https://cocoatomo.github.io/poetry-ja/)をインストール
     ```
-    $ pip install requests
-    $ pip install beautifulsoup4
-    $ pip install slackweb
-    $ pip install python-dotenv
+    $ poetry shell
+    $ python comic.py
     ```
-
-4. 実行
-   ```
-   $ python3 comic.py
-   ```
 
 ## 実行結果
 slackの該当チャンネルに下記が表示されます
